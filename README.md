@@ -30,8 +30,7 @@ Train model
 python depth-aware-nst/fast_neural_style.py train --dataset </path/to/train-dataset> --style-image </path/to/style/image> --save-model-dir </path/to/save-model/folder> --epochs 2 --cuda 1
 ```
 
-There are several command line arguments, the important ones are listed below
-* `--dataset`: path to training dataset, the path should point to a folder containing another folder with all the training images. I used COCO 2014 Training images dataset [80K/13GB] [(download)](https://cocodataset.org/#download).
+There are several command line arguments, the important ones are listed below:
 * `--style-image`: path to style-image.
 * `--save-model-dir`: path to folder where trained model will be saved.
 * `--cuda`: set it to 1 for running on GPU, 0 for CPU.
@@ -39,13 +38,25 @@ There are several command line arguments, the important ones are listed below
 * `--style-weight`: weight for style-loss, default is 1e10.
 * `--depth-loss`: set it to 1 to train with depth loss, 0 train without depth loss, default is 1.
 * `--depth-weight`: weight for depth-loss, default is 1e5
+* `--feats`: set it to 1 to train with depth-of-gaussian loss
 
 
 ## Injecting NST in a Computer Game
 ### Setup
 * Unity 2021.3.25f1
-* High Definition RP 12.1.11
-* Barracuda 3.0.0
+* [High Definition RP 12.1.11](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.1/manual/index.html)
+* [Barracuda 3.0.0](https://docs.unity3d.com/Packages/com.unity.barracuda@3.0/manual/index.html)
 
 ![Unity Setup](images/unity_setup_screenshot.png)
 
+* Create an empty GameObject in the scene
+* Add a Custom Pass Volume
+* Add the `CopyPassStylization` pass
+* Fill in the missing assets (drag & drop)
+    * Model Asset: The trained stylisation network exported to .onnx format
+    * Style Transfer Shader: `StyleTransferShader.compute`
+    * Output Render Texture: `Stylized Copy Pass.renderTexture`
+    * Fullscreen Material: `FullScreen_Fullscreen_NST.mat`
+    * Gbuffer Shader: `GbufferShader.compute` (This should be located at the `Resources` directory in the project's Assets folder)
+    
+When setting this Gameobject active in the scene, the stylization effect takes place.
